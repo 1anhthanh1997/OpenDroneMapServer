@@ -1,6 +1,6 @@
 const express = require('express');
 const {User} = require('../models/user');
-const bcrypt = require('bcrypt');
+const {Map} = require('../models/maps')
 const router = express.Router();
 const auth = require('../middleware/auth');
 const path = require('path');
@@ -11,7 +11,14 @@ const randomString=require('randomstring')
 const nodeMailer=require('nodemailer')
 // Create mongo connection
 const conn = mongoose.createConnection(mongoURI);
+router.get('/projects',auth, async (req,res)=>{
+    try{
+        let project=Map.findByCredentials()
+    }catch (e) {
 
+    }
+
+})
 //forgot password
 router.post('/sendOTP',async (req,res)=>{
     try{
@@ -71,6 +78,7 @@ router.post('/resetPassword',async (req,res)=>{
 //register
 router.post('/users', async (req, res) => {
     let user = new User(req.body)
+
     try {
         // console.log(req.body)
         await user.save()

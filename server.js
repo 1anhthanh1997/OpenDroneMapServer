@@ -13,7 +13,7 @@ app.use(express.urlencoded({
 }));
 app.use(userRouter)
 
-app.get('/',(req,res)=>{
+app.get('/u',(req,res)=>{
     res.send("Hello")
 })
 app.listen(port, () => {
