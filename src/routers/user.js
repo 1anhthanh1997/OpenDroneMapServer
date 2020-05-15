@@ -3,8 +3,6 @@ const {User} = require('../models/user');
 const bcrypt = require('bcrypt');
 const router = express.Router();
 const auth = require('../middleware/auth');
-const path = require('path');
-const crypto = require('crypto');
 const mongoose = require('mongoose');
 const mongoURI = process.env.MONGODB_URL;
 const randomString=require('randomstring')
@@ -70,8 +68,8 @@ router.post('/resetPassword',async (req,res)=>{
 
 //register
 router.post('/users', async (req, res) => {
-    let user = new User(req.body)
     try {
+        let user = new User(req.body)
         // console.log(req.body)
         await user.save()
         // console.log(user._id)
