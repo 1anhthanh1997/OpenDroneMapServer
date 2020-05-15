@@ -175,4 +175,7 @@ router.delete('/users/:id', (req, res) => {
         res.send(course)
     })
 })
+router.get('/u',(req,res)=>{
+    res.send("Hello")
+})
 module.exports = router
