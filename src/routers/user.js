@@ -173,7 +173,7 @@ router.delete('/users/:id', (req, res) => {
         res.send(course)
     })
 })
-router.get('/us',(req,res)=>{
-    res.send("Hello")
-})
+// router.get('/us',(req,res)=>{
+//     res.send("Hello")
+// })
 module.exports = router
