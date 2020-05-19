@@ -1,7 +1,12 @@
-const mongoose = require('mongoose')
+let mongoose = require('mongoose');
 
-mongoose.connect(process.env.MONGODB_URL, {
+mongoose.Promise = global.Promise;
+mongoose.connect(process.env.MONGODB_URL,{
+    useUnifiedTopology: true,
     useNewUrlParser: true,
     useCreateIndex: true,
-    useFindAndModify: false
-})
+    useFindAndModify: false,
+
+});
+
+module.exports = {mongoose};

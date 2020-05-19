@@ -1,121 +1,115 @@
-const mongoose = require('mongoose')
-const validator = require('validator')
-const bcrypt = require('bcryptjs')
+var {mongoose} = require('../db/mongoose');
+const bcript = require('bcrypt');
+// let ObjectId=mongoose.Schema.Types.ObjectId;
+let autoIncrement = require('mongoose-auto-increment');
 const jwt = require('jsonwebtoken')
-const Task = require('./task')
+autoIncrement.initialize(mongoose);
+let userSchema = new mongoose.Schema({
+    // _id:{
+    //     type:Number
+    // },
+    username: {
+        type: String,
+        unique: true,
+        required: [true, "Username is required"],
+        // index: {unique: true}
+    },
+    password: {
+        type: String,
+        required: [true, "Password is required"],
+        validate: {
+            validator: (value) => {
+                if(value.length<8){
+                    throw new Error("Password is invalid");
+                }
+                // let format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+                //
+                // if (value.toLowerCase() == value || !format.test(value) || !/\d/.test(value)) {
+                //     throw new Error("Password is invalid");
+                // }
 
-const userSchema = new mongoose.Schema({
+            },
+            message: 'Password is invalid'
+        }
+    },
     name: {
+        type: String,
+        required: true,
+        trim: true,
+    },
+    gender:{
+      type:String,
+      required:true,
+      trim:true
+    },
+    dateOfBirth:{
+      type:String,
+      required:true,
+      trim:true
+    },
+    phoneNumber: {
         type: String,
         required: true,
         trim: true
     },
     email: {
         type: String,
-        unique: true,
         required: true,
         trim: true,
-        lowercase: true,
-        validate(value) {
-            if (!validator.isEmail(value)) {
-                throw new Error('Email is invalid')
-            }
-        }
+        minLength: 9
     },
-    password: {
-        type: String,
-        required: true,
-        minlength: 7,
-        trim: true,
-        validate(value) {
-            if (value.toLowerCase().includes('password')) {
-                throw new Error('Password cannot contain "password"')
-            }
-        }
-    },
-    age: {
-        type: Number,
-        default: 0,
-        validate(value) {
-            if (value < 0) {
-                throw new Error('Age must be a postive number')
-            }
-        }
-    },
+
     tokens: [{
         token: {
             type: String,
-            required: true
         }
     }],
-    avatar: {
-        type: Buffer
-    }
-}, {
-    timestamps: true
-})
 
-userSchema.virtual('tasks', {
-    ref: 'Task',
-    localField: '_id',
-    foreignField: 'owner'
-})
 
-userSchema.methods.toJSON = function () {
+})
+userSchema.methods.getPublicInformation = async function () {
     const user = this
     const userObject = user.toObject()
-
     delete userObject.password
     delete userObject.tokens
-    delete userObject.avatar
-
+    console.log(userObject)
     return userObject
 }
-
-userSchema.methods.generateAuthToken = async function () {
-    const user = this
-    const token = jwt.sign({ _id: user._id.toString() }, process.env.JWT_SECRET)
-
-    user.tokens = user.tokens.concat({ token })
-    await user.save()
-
-    return token
-}
-
-userSchema.statics.findByCredentials = async (email, password) => {
-    const user = await User.findOne({ email })
-
+userSchema.statics.findByEmail = async (email) => {
+    // console.log("Hello World")
+    const user = await User.findOne({email:email})
     if (!user) {
         throw new Error('Unable to login')
     }
-
-    const isMatch = await bcrypt.compare(password, user.password)
-
-    if (!isMatch) {
-        throw new Error('Unable to login')
-    }
-
     return user
 }
-
-// Hash the plain text password before saving
-userSchema.pre('save', async function (next) {
-    const user = this
-
-    if (user.isModified('password')) {
-        user.password = await bcrypt.hash(user.password, 8)
+//Sử dụng model User
+userSchema.statics.findByCredentials = async (username, password) => {
+    // console.log("Hello World")
+    const user = await User.findOne({username: username})
+    if (!user) {
+        throw new Error('Unable to login')
     }
-
-    next()
-})
-
-// Delete user tasks when user is removed
-userSchema.pre('remove', async function (next) {
+    const isMatch = await bcript.compare(password, user.password)
+    if (!isMatch) throw new Error('Unable to login')
+    return user
+}
+//Sử dụng instance của User là user
+userSchema.methods.generateAuthToken = async function () {
     const user = this
-    await Task.deleteMany({ owner: user._id })
-    next()
+    const token = jwt.sign({_id: user._id.toString()}, 'thisismynewcourse')
+    user.tokens = user.tokens.concat({token})
+    await user.save()
+    return token
+}
+userSchema.pre('save', async function (next) {
+    const user = this;
+    if (user.isModified('password')) {
+        user.password = await bcript.hash(user.password, 1);
+        console.log(user.password);
+    }
+    next();
 })
-
-const User = mongoose.model('User', userSchema)
-
-module.exports = User
+userSchema.plugin(autoIncrement.plugin, 'user')
+const User = mongoose.model('user', userSchema)
+module.exports = {User}
