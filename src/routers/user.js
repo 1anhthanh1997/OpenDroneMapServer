@@ -71,7 +71,7 @@ router.post('/users', async (req, res) => {
     try {
         console.log("Hello")
         let user = new User(req.body)
-        // console.log(req.body)
+        console.log(req.body)
         await user.save()
         // console.log(user._id)
         // const token = jwt.sign({ _id: "1" }, 'thisismynewcourse')
