@@ -69,6 +69,7 @@ router.post('/resetPassword',async (req,res)=>{
 //register
 router.post('/users', async (req, res) => {
     try {
+        console.log("Hello")
         let user = new User(req.body)
         // console.log(req.body)
         await user.save()
