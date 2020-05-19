@@ -4,7 +4,8 @@ const jwt = require('jsonwebtoken')
 autoIncrement.initialize(mongoose);
 let mapSchema = new mongoose.Schema({
     username:{
-        type:String
+        type:String,
+        required:true
     },
     project: {
         projectId: {
@@ -14,54 +15,60 @@ let mapSchema = new mongoose.Schema({
         projectName: {
             type:String,
             required:true
-        }
-    },
-    task: {
-        taskId: {
-            type:String,
-            required:true
         },
-        taskName: {
-            type:String,
-            required:true
-        }
-    },
-    link:{
-        type:String,
-        required:true
-    },
-    markers: [{
-        markerId:{
-            type:String,
+        description:{
+          type:String
         },
-        position:{
-            lat:{
-                type:Number
+        tasks: [{
+            taskId: {
+                type:String,
+
             },
-            long:{
-                type:Number
-            }
-        },
-        markerName:{
-            type:String,
-        }
-    }],
-    roads:[{
-        roadPointId:{
-            type:String,
-        },
-        position:{
-            lat:{
-                type:Number
+            taskName: {
+                type:String,
             },
-            long:{
-                type:Number
-            }
-        },
-        roadPointName:{
-            type:String,
-        }
-    }],
+            description: {
+                type:String
+            },
+            link:{
+                type:String,
+            },
+            markers: [{
+                markerId:{
+                    type:String,
+                },
+                position:{
+                    lat:{
+                        type:Number
+                    },
+                    lng:{
+                        type:Number
+                    }
+                },
+                markerName:{
+                    type:String,
+                }
+            }],
+            roads:[{
+                roadPointId:{
+                    type:String,
+                },
+                position:{
+                    lat:{
+                        type:Number
+                    },
+                    long:{
+                        type:Number
+                    }
+                },
+                roadPointName:{
+                    type:String,
+                }
+            }],
+        }]
+
+    },
+
 
 })
 // userSchema.methods.getPublicInformation = async function () {
