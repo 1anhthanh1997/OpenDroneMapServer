@@ -10,9 +10,11 @@ const nodeMailer=require('nodemailer')
 // Create mongo connection
 const conn = mongoose.createConnection(mongoURI);
 
+
 //forgot password
 router.post('/sendOTP',async (req,res)=>{
     try{
+        console.log(req.body.email)
         let user=User.findByEmail(req.body.email);
         let OTP=await randomString.generate({
             length:6,
@@ -32,7 +34,7 @@ router.post('/sendOTP',async (req,res)=>{
             text: 'Mã OTP của bạn là:'+OTP
         };
         let response=await transporter.sendMail(mailOptions)
-        res.send(OTP)
+        res.send({OTP:OTP})
     }catch (e) {
         res.status(400).send(e)
     }
@@ -54,8 +56,8 @@ router.post('/resetPassword',async (req,res)=>{
         let mailOptions = {
             from: '4anhthanh1997@gmail.com',
             to: req.body.email,
-            subject: 'Mật khẩu mới',
-            text: 'Mật khẩu mới của bạn là:'+originPassword
+            subject: 'Reset Password',
+            text: 'Mật khẩu mới của bạn là: '+originPassword
         };
         let response=await transporter.sendMail(mailOptions)
         res.send(response)
@@ -105,7 +107,8 @@ router.post('/users/login', async (req, res) => {
 })
 router.post('/users/logout', auth, async (req, res) => {
     try {
-        req.user.tokens = req.user.tokens.filter((token) => {
+        console.log(req.token)
+        req.user.tokens = await req.user.tokens.filter((token) => {
             return token.token !== req.token
         })
         await req.user.save()

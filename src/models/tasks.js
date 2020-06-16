@@ -2,28 +2,41 @@ let {mongoose} = require('../db/mongoose');
 let autoIncrement = require('mongoose-auto-increment');
 const jwt = require('jsonwebtoken')
 autoIncrement.initialize(mongoose);
-let mapSchema = new mongoose.Schema({
-    username: {
-        type: String,
+let taskSchema = new mongoose.Schema({
+    projectId:{
+        type:String,
         required: true
     },
-
-    projectId: {
-        type: String,
-        required: true
+    taskId: {
+        type:String,
+        required:true
     },
-    projectName: {
-        type: String,
-        required: true
+    taskName: {
+        type:String,
+        required:true
     },
     description: {
-        type: String
+        type:String
     },
-    tasks: [String]
-
-
-});
-
+    link:[{
+        username:{
+            type:String
+        },
+        link:{
+            type:String
+        }
+    }],
+    schedule:[{
+        id:{
+            type:String
+        },
+        name:{
+            type:String
+        }
+    }],
+    markers:[String],
+    roads:[String],
+})
 // userSchema.methods.getPublicInformation = async function () {
 //     const user = this
 //     const userObject = user.toObject()
@@ -67,6 +80,7 @@ let mapSchema = new mongoose.Schema({
 //     }
 //     next();
 // })
-mapSchema.plugin(autoIncrement.plugin, 'maps')
-const Map = mongoose.model('map', mapSchema)
-module.exports = {Map}
+taskSchema.plugin(autoIncrement.plugin, 'tasks')
+const Task = mongoose.model('task', taskSchema)
+module.exports = {Task}
+

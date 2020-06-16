@@ -56,7 +56,8 @@ let userSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-        minLength: 9
+        minLength: 9,
+        unique: true
     },
 
     tokens: [{
@@ -76,6 +77,7 @@ userSchema.methods.getPublicInformation = async function () {
     return userObject
 }
 userSchema.statics.findByEmail = async (email) => {
+    console.log(email)
     // console.log("Hello World")
     const user = await User.findOne({email:email})
     if (!user) {
@@ -97,8 +99,9 @@ userSchema.statics.findByCredentials = async (username, password) => {
 //Sử dụng instance của User là user
 userSchema.methods.generateAuthToken = async function () {
     const user = this
-    const token = jwt.sign({_id: user._id.toString()}, 'thisismynewcourse')
-    user.tokens = user.tokens.concat({token})
+    const token = await jwt.sign({_id: user._id.toString()}, 'thisismynewcourse',{expiresIn: '2h'})
+    console.log(token)
+    user.tokens = await user.tokens.concat({token})
     await user.save()
     return token
 }
