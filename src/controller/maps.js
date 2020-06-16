@@ -1,8 +1,5 @@
 const {Map} = require('../models/maps')
-const mongoose = require('mongoose');
-const mongoURI = process.env.MONGODB_URL;
-// Create mongo connection
-const conn = mongoose.createConnection(mongoURI)
+
 
 exports.getProjectsOfUser=async (req, res) => {
     try {

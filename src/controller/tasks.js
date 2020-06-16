@@ -1,13 +1,8 @@
-const express = require('express');
-const {User} = require('../models/user');
 const {Map} = require('../models/maps')
 const {Task} = require('../models/tasks')
 const {Marker} = require('../models/markers')
 const {Road} = require('../models/roads')
-const router = express.Router();
-const auth = require('../middleware/auth');
-const mongoose = require('mongoose');
-const mongoURI = process.env.MONGODB_URL;
+
 
 exports.getTaskList=async (req, res) => {
     try {
