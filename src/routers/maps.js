@@ -42,7 +42,6 @@ router.delete('/projects/:projectId/tasks/:taskId', auth, task_controller.delete
 
 // Get info of task
 router.get('/projects/:projectId/tasks/:taskId', auth, task_controller.getTaskInfo)
-
 // Marker
 // Get list makers of task
 router.get('/projects/:projectId/tasks/:taskId/markers', auth, marker_controller.getMarkerList);

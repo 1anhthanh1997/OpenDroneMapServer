@@ -129,7 +129,7 @@ exports.resetPassword=async (req,res)=>{
 exports.sendOTP=async (req,res)=>{
     try{
         console.log(req.body.email)
-        let user=User.findByEmail(req.body.email);
+        let user=await User.findByEmail(req.body.email);
         let OTP=await randomString.generate({
             length:6,
             charset:'0123456789'
@@ -148,6 +148,7 @@ exports.sendOTP=async (req,res)=>{
             text: 'Mã OTP của bạn là:'+OTP
         };
         let response=await transporter.sendMail(mailOptions)
+
         res.send({OTP:OTP})
     }catch (e) {
         res.status(400).send(e)

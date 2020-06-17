@@ -77,7 +77,7 @@ userSchema.methods.getPublicInformation = async function () {
     return userObject
 }
 userSchema.statics.findByEmail = async (email) => {
-    console.log(email)
+    // console.log(email)
     // console.log("Hello World")
     const user = await User.findOne({email:email})
     if (!user) {
