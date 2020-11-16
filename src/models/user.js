@@ -39,12 +39,10 @@ let userSchema = new mongoose.Schema({
     },
     gender:{
       type:String,
-      required:true,
       trim:true
     },
     dateOfBirth:{
       type:String,
-      required:true,
       trim:true
     },
     phoneNumber: {
