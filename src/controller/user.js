@@ -5,7 +5,7 @@ const nodeMailer=require('nodemailer')
 
 exports.register=async (req,res)=>{
     try {
-        console.log("Hello")
+        // console.log("Hello")
         let user = new User(req.body)
         console.log(req.body)
         await user.save()
@@ -15,6 +15,10 @@ exports.register=async (req,res)=>{
         // console.log(token)
         res.status(201).send(user)
     } catch (e) {
+        // console.log(e)
+        if(e.code===11000){
+            res.status(409).send({})
+        }
         res.status(400).send(e)
     }
 }
