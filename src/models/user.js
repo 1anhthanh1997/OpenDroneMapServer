@@ -57,7 +57,9 @@ let userSchema = new mongoose.Schema({
         minLength: 9,
         unique: true
     },
-
+    groups: [{
+        type: Array
+    }],
     tokens: [{
         token: {
             type: String,
