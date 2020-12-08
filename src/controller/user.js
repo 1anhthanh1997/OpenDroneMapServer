@@ -2,6 +2,85 @@ const {User} = require('../models/user');
 const bcrypt = require('bcrypt');
 const randomString=require('randomstring')
 const nodeMailer=require('nodemailer')
+const mongoose = require('mongoose');
+const multer = require('multer')
+const path = require('path');
+const crypto = require('crypto');
+// Create mongo connection
+const GridFsStorage = require('multer-gridfs-storage');
+const Grid = require('gridfs-stream');
+const mongoURI = process.env.MONGODB_URL;
+
+// Create mongo connection
+const conn = mongoose.createConnection(mongoURI);
+
+// Init gfs
+let gfs;
+let filename;
+
+conn.once('open', () => {
+    // Init stream
+    gfs = Grid(conn.db, mongoose.mongo);
+    gfs.collection('uploads');
+});
+
+// Create storage engine
+const storage = new GridFsStorage({
+    url: mongoURI,
+    file: (req, file) => {
+        return new Promise((resolve, reject) => {
+            crypto.randomBytes(16, (err, buf) => {
+                if (err) {
+                    return reject(err);
+                }
+                filename = buf.toString('hex') + path.extname(file.originalname);
+                const fileInfo = {
+                    filename: filename,
+                    bucketName: 'uploads'
+                };
+                resolve(fileInfo);
+            });
+        });
+    }
+});
+exports.upload = multer({storage});
+
+
+exports.getImageInfo=async (req,res)=>{
+    gfs.files.findOne({filename: req.params.filename}, (err, file) => {
+        // Check if file
+        if (!file || file.length === 0) {
+            return res.status(404).json({
+                err: 'No file exists'
+            });
+        }
+
+        // Check if image
+        if (file.contentType === 'image/jpeg' || file.contentType === 'image/png') {
+            // Read output to browser
+            const readstream = gfs.createReadStream(file.filename);
+            readstream.pipe(res);
+        } else {
+            const readstream2 = gfs.createReadStream(file.filename)
+            readstream2.pipe(res);
+            // res.status(404).json({
+            //     err: 'Not an image'
+            // });
+        }
+    });
+}
+
+exports.uploadAvatar=async (req,res)=>{
+    try {
+        let avatarLink="https://fierce-oasis-19381.herokuapp.com/image/"+filename
+        // req.user.avatar=avatarLink
+        // await req.user.save();
+        res.send(avatarLink)
+        // res.redirect('/')
+    }catch (e) {
+        res.status(400).send(e)
+    }
+}
 
 exports.register=async (req,res)=>{
     try {

@@ -1,10 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../middleware/auth');
-const mongoose = require('mongoose');
-const mongoURI = process.env.MONGODB_URL;
-// Create mongo connection
-const conn = mongoose.createConnection(mongoURI);
 
 let user_controller=require('../controller/user')
 
@@ -18,4 +14,6 @@ router.post('/users/logout', auth, user_controller.logOut);
 router.post('/users/logoutAll', auth, user_controller.logOutAll);
 router.patch('/users/changePass',auth, user_controller.changePass);
 router.patch('/users/me', auth, user_controller.changePersonalInformation);
+router.post('/upload',user_controller.upload.single("avatar"),user_controller.uploadAvatar)
+router.get('/image/:filename',user_controller.getImageInfo)
 module.exports = router;
