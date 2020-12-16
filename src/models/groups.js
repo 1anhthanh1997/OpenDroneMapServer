@@ -16,6 +16,18 @@ let groupSchema = new mongoose.Schema({
     groupAvatar: {
         type: String,
     },
+    startDate:{
+        type:Date,
+        required:true
+    },
+    endDate:{
+        type:Date,
+        required:true
+    },
+    captain:{
+      type:String,
+      required:true
+    },
     members: {
         type: Array,
     },
