@@ -2,9 +2,9 @@ let {mongoose} = require('../db/mongoose');
 let autoIncrement = require('mongoose-auto-increment');
 autoIncrement.initialize(mongoose);
 let groupSchema = new mongoose.Schema({
-    groupId: {
-        type: String,
-        required: true
+    groupId:{
+        type:String,
+        required:true
     },
     groupName: {
         type: String,

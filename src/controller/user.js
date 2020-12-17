@@ -104,6 +104,20 @@ exports.register=async (req,res)=>{
 exports.getUserInfo=async (req, res) => {
     res.send(req.user)
 }
+
+exports.getMemberInfo=async (req, res) => {
+    try {
+        let user =await User.findOne({username:req.params.username})
+        console.log(req.body)
+        res.status(201).send(user)
+    } catch (e) {
+        if(e.code===11000){
+            res.status(409).send({})
+        }
+        res.status(400).send(e)
+    }
+}
+
 exports.login=async (req, res) => {
     try {
         const user = await User.findByCredentials(req.body.username, req.body.password)

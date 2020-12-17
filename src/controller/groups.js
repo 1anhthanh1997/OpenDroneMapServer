@@ -90,7 +90,7 @@ exports.getTripList = async (req, res) => {
                response.push(trip)
            }
            else{
-               await trip.map((member)=>{
+               await trip.members.map((member)=>{
                    if(member===req.user.username){
                        response.push(trip)
                    }
@@ -127,11 +127,36 @@ exports.createTrip = async (req, res) => {
 
 exports.editTrip = async (req, res) => {
     try {
-        // let editedTrip=await Group.find({_id:req.params.id})
-        res.send("Hello")
+        console.log(req.params.id)
+        let editedTrip = await Group.updateOne({_id: req.params.id}, req.body)
+        res.status(200).send(editedTrip)
+
     } catch (e) {
         console.log(e)
     }
 }
+
+exports.joinTrip = async (req, res) => {
+    try {
+        let chooseGroup = await Group.findOne({groupId: req.params.groupId})
+        let flag = true;
+        console.log(chooseGroup.members)
+        await chooseGroup.members.map((item) => {
+            if (item === req.user.username) {
+                flag = false
+            }
+        })
+        if (flag) {
+            await chooseGroup.members.push(req.user.username)
+        }
+        await chooseGroup.save()
+        res.status(200).send(chooseGroup)
+    } catch (e) {
+        console.log(e)
+        res.status(404).send(e)
+    }
+}
+
+
 
 

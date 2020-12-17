@@ -9,6 +9,7 @@ router.post('/sendOTP',user_controller.sendOTP);
 router.post('/resetPassword',user_controller.resetPassword);
 router.post('/users',user_controller.register);
 router.get('/users/me', auth, user_controller.getUserInfo);
+router.get('/memberInfo/:username', auth, user_controller.getMemberInfo);
 router.post('/users/login', user_controller.login);
 router.post('/users/logout', auth, user_controller.logOut);
 router.post('/users/logoutAll', auth, user_controller.logOutAll);
